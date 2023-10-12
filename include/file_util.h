@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-char* readFile(const char *filename) {
+char* read_file(const char *filename) {
     FILE *file;
 
     // Open the file for reading
