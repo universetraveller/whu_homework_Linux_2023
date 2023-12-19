@@ -20,7 +20,7 @@ If the memory out of range when adding parameter size, try to merge the blocks w
 First, check if the parameter ptr exists in the block list. If so, unset the allocated flag. Then, if the block at the end of the block list, free this memory via reset the high end of the memory (that's time actually releasing memory). Before return from free, check if the tail of the list is not allocated. If so, call free recursively to free the blocks which is not allocated continuously at the end of block list.  
 
 ### _umalloc_block
-Check if the block is larger than the requested size adding a pre-defined parameter MAX_WASTED_SIZE. If so, split this block to be block with size is requested size and the remaining part (another block). Or, if the block is not very large (compared with size), directly return this block (actually the pointer to memory it represents) for user allocation request.  
+Check if the block is larger than the requested size adding a pre-defined parameter MAX_WASTED_SIZE. If so, split this block to be block with size is requested size and the remaining part (another block). Or, if the block is not very large (compared with size), directly return this block (actually the pointer to memory it represents) for user's allocation request.  
 
 ### umerge
 Use first fit algorithm, find the first area (continuous blocks) satisfy the request, then merge the blocks into one block and call _umalloc_block to process it. If the area does not exist, which indicates the memory is not enough, the function returns NULL.  
