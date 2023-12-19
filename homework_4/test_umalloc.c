@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <stdint.h>
 
 // Test function
 void run_tests() {
@@ -27,7 +26,7 @@ void run_tests() {
 
     // Test Case 3: Allocate more than available memory
     printf("Test Case 3: Allocate more than available memory\n");
-    void* ptr4 = umalloc(SIZE_MAX);  // SIZE_MAX is the maximum value representable by size_t
+    void* ptr4 = umalloc(MAX_MEM_BYTES);  // SIZE_MAX is the maximum value representable by size_t
     assert(ptr4 == NULL);  // Allocation should fail
 
     printf("Test Case 3 passed\n\n");
@@ -46,11 +45,38 @@ void run_tests() {
 
     void* ptr5 = umalloc(7500);
     void* ptr6 = umalloc(500);
+    ufree(ptr6);
+    ufree(ptr5);
+    ptr5 = umalloc(8000);
+    ufree(ptr5);
+
+    printf("Test Case 5 passed\n\n");
+
+    printf("Test Case 6: Reallocation test reversed\n");
+
+    ptr5 = umalloc(7500);
+    ptr6 = umalloc(500);
     ufree(ptr5);
     ufree(ptr6);
     ptr5 = umalloc(8000);
+    assert(ptr5 != NULL);
+    ufree(ptr5);
 
-    printf("Test Case 5 passed\n\n");
+    printf("Test Case 6 passed\n\n");
+
+    printf("Test Case 7: Reallocation test for blocks\n");
+
+    ptr5 = umalloc(7500);
+    ptr6 = umalloc(500);
+    void* ptr7 = umalloc(1);
+    ufree(ptr5);
+    ufree(ptr6);
+    ptr5 = umalloc(8000);
+    assert(ptr5 != NULL);
+    ufree(ptr5);
+    ufree(ptr7);
+
+    printf("Test Case 7 passed\n\n");
 
     printf("All tests passed!\n");
 }

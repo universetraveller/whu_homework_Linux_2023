@@ -84,12 +84,16 @@ void* umerge(size_t target){
 		perror("Memory is not enough\n");
 		return NULL;
 	}
-	struct MemoryBlock* pre = _blocks_head;
-	while(pre -> next != begin)
-		pre = pre -> next;
 	struct MemoryBlock* merged = _create_block(now_size, 0, begin -> ptr);
-	pre -> next = merged;
 	merged -> next = p -> next;
+	if(begin == _blocks_head){
+		_blocks_head = merged;
+	}else{
+		struct MemoryBlock* pre = _blocks_head;
+		while(pre -> next != begin)
+			pre = pre -> next;
+		pre -> next = merged;
+	}
 	return _umalloc_block(merged, target);
 }
 
@@ -122,9 +126,16 @@ void ufree(void* ptr){
 			break;
 		p = p -> next;
 	}
-	if(p != NULL){
-		p -> allocated = 0;
-		if(p == _blocks_tail){
+	if(p == NULL){
+		perror("No memory block match the pointer\n");
+		return;
+	}
+	p -> allocated = 0;
+	if(p == _blocks_tail){
+		if(p == _blocks_head){
+			_blocks_head = NULL;
+			_blocks_tail = NULL;
+		}else{
 			// find the previous block for actually release memory
 			// Complexity if O(n) but we do not need to use pre pointer in the struct MemoryBlock
 			// Besides, this loop is executed only when p is at the end of the block list
@@ -133,9 +144,11 @@ void ufree(void* ptr){
 				pre = pre -> next;
 			_blocks_tail = pre;
 			pre -> next = NULL;
-			_ubreak(-(p -> size));
 		}
-		return;
+		_ubreak(-(p -> size));
 	}
-	perror("No memory block match the pointer\n");
+	// patch for test case 6
+	// when free last block, check if its previous block can be freed
+	if(_blocks_tail != NULL && !(_blocks_tail -> allocated))
+		ufree(_blocks_tail -> ptr);
 }
