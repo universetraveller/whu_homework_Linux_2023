@@ -4,10 +4,11 @@
 #include <unistd.h>
 #include "config.c"
 
-void mountWebDAV(const char* mountPoint, const char* username, const char* password, const char* webdavURL) {
+void mountWebDAV(const char* mountPoint, const char* username, const char* password, const char* prefix, const char* webdavURL) {
     char command[256];
     makeConfigFile("/etc/davfs2/davfs2.conf");
-    makeSecrets("/etc/davfs2/secrets", webdavURL, username, password);
+    makeSecrets("/etc/davfs2/secrets", prefix, webdavURL, username, password);
+    system("chmod 600 /etc/davfs2/secrets");
     snprintf(command, sizeof(command), "mount -t davfs -o noexec,uid=%s,gid=%s %s %s",
              username, username, webdavURL, mountPoint);
 
@@ -39,13 +40,13 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         const char* credentials = argv[3];
-        char username[256], password[256], webdavURL[256];
+        char username[256], password[256], webdavURL[256], prefix[32];
         int port;
 
-        if (sscanf(credentials, "%255[^:]:%255[^@]@%255[^:]:%d", username, password, webdavURL, &port) > 2) {
+        if (sscanf(credentials, "%255[^:]:%255[^@]@%32[^:/]://%255[^:]:%d", username, password, prefix, webdavURL, &port) > 3) {
             // Mount WebDAV
             printf("Mounting WebDAV...\n");
-            mountWebDAV(mountPoint, username, password, webdavURL);
+            mountWebDAV(mountPoint, username, password, prefix, webdavURL);
             printf("WebDAV mounted at %s\n", mountPoint);
         } else {
             fprintf(stderr, "Invalid credentials format. Could not parse address.\n");

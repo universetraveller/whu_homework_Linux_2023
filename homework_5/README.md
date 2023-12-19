@@ -5,7 +5,7 @@ The super block save date via bytes offset, so we just need to read the file sys
 
 ## Data Structure
 See also [Linux kernel ext4 file system](https://docs.kernel.org/filesystems/ext4/globals.html)  
-Full definition [ext4.h](https://elixir.bootlin.com/linux/latest/source/fs/ext4/ext4.h#L1289)  
+Full definition of structures are in [ext4.h](https://elixir.bootlin.com/linux/latest/source/fs/ext4/ext4.h#L1289)  
 The super block has too many parameters to parse so I choose to analyze the first 15 parameters. As the website, each parameter keeps size __le32 that equals to uint32_t, so I choose uint32_t as the offset.  
 Group descriptor, inodes bitmap and inodes table entry are processed using the same approach.  
 I choose the first 3 parameters to analyze for group descriptor becasue they are the lower 32-bits of bitmap that can almost represent the situation of bitmap.  

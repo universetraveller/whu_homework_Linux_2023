@@ -25,7 +25,7 @@ void skipLeadingWhitespace(char **str) {
 }
 
 
-void makeSecrets(const char *filename, const char* url_p, const char* userName, const char* pwd) {
+void makeSecrets(const char *filename, const char* prefix, const char* url_p, const char* userName, const char* pwd) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         fprintf(stderr, "Unable to open the file: %s\n", filename);
@@ -52,8 +52,9 @@ void makeSecrets(const char *filename, const char* url_p, const char* userName, 
         }
 
         // Parse key-value pairs
-        char url[MAX_KEY_LENGTH], username[MAX_VALUE_LENGTH], password[MAX_VALUE_LENGTH];
-        if (sscanf(line, "%127s %127s %127[^\n]", url, username, password) == 3){
+        char prefix[32], url[MAX_KEY_LENGTH], username[MAX_VALUE_LENGTH], password[MAX_VALUE_LENGTH];
+        if (sscanf(line, "%32[^:/]://%255s %127s %127[^\n]", prefix, url, username, password) == 4){
+            //printf("Prefix: %s, url: %s, url_p: %s", prefix, url, url_p);
             // Compare keys and update corresponding values
             if (strcmp(url, url_p) == 0) {
             } else {
@@ -66,7 +67,7 @@ void makeSecrets(const char *filename, const char* url_p, const char* userName, 
         }
     }
     char formattedString[3*MAX_KEY_LENGTH];
-    sprintf(formattedString, "%s %s %s", url_p, userName, pwd);
+    sprintf(formattedString, "%s://%s %s %s\n", prefix, url_p, userName, pwd);
     fputs(formattedString, tempFile);
 
     fclose(file);
@@ -177,7 +178,8 @@ void makeConfigFile(const char *filename) {
             fputs(line, tempFile);
         }
     }
-    fputs("use_locks       0\nask_auth        0\nservercert      /etc/davfs2/certs/server.crt\ncache_size      5000\nuse_proxy       0\ntrust_ca_dir    /etc/ssl/certs\nignore_dav_header 1\n", tempFile);
+    //fputs("use_locks       0\nask_auth        0\nservercert      /etc/davfs2/certs/server.crt\ncache_size      5000\nuse_proxy       0\ntrust_ca_cert    /etc/ssl/certs\nignore_dav_header 1\n", tempFile);
+    fputs("use_locks       0\nuse_proxy       0\nignore_dav_header 1\n", tempFile);
 
     fclose(file);
     fclose(tempFile);
@@ -270,7 +272,7 @@ void writeConfigFile(const char *filename, const AppConfig *config) {
 }
 
 int _main() {
-    makeSecrets("myconf.conf", "test.com", "test@test.com", "abcdef");
+    makeSecrets("myconf.conf", "http", "test.com", "test@test.com", "abcdef");
     exit(0);
     AppConfig config;
 
