@@ -14,7 +14,7 @@ Yet, I know there are some better ways to check if the user is legal (use public
 Bind the ip address (broadcast address) with the specific port to the socket, and set the ip address of peer to another sockaddr_in for sending messages.  
 
 ### Send messages
-Read a message from buffer. If it is '/exit', the whole process will exit (the child process will be kill at the end of the parent process). Add authentication info to the head of the message, then send it to the destination address. Then, print the formatted infomation of the message (with boxing, time, user name, message and overriding the input characters) to the local terminal.  
+Read a message from buffer. If it is '/exit', the whole process will exit (the child process will be killed at the end of the parent process). Add authentication info to the head of the message, then send it to the destination address. Then, print the formatted infomation of the message (with boxing, time, user name, message and overriding the input characters) to the local terminal.  
 
 ### Receive messages
 Receive a message from broadcast address, and check the password. If there is no authentication infomation or the password is unmatched, skip this message.  
