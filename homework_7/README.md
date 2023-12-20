@@ -1,6 +1,6 @@
 # Document
 ## Basic Principle
-The idea is from file `chat.c`, which I have written for Server-Client p2p chatting. And then I implemented `p2p_chat.c` as side-to-side chatting via two processes. One process is to send messages and the another is to receive messages and check if the user has authentication.  
+The idea is from file `cs_model/chat.c`, which I have written for Client-Server style p2p chatting. And then I implemented `p2p_chat.c` as side-to-side chatting via two processes. One process is to send messages and the another is to receive messages and check if the user has authentication.  
 
 The implementation is based on socket. All call to the command should have a password to specify a unique communicating session. The message is received only when passwords are matched.    
 
