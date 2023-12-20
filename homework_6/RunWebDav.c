@@ -45,7 +45,6 @@ int main(int argc, char* argv[]) {
 
         if (sscanf(credentials, "%255[^:]:%255[^@]@%32[^:/]://%255[^:]:%d", username, password, prefix, webdavURL, &port) > 3) {
             // Mount WebDAV
-            printf("Mounting WebDAV...\n");
             mountWebDAV(mountPoint, username, password, prefix, webdavURL);
             printf("WebDAV mounted at %s\n", mountPoint);
         } else {
@@ -54,9 +53,8 @@ int main(int argc, char* argv[]) {
         }
     } else if (strcmp(operation, "unmount") == 0) {
         // Unmount WebDAV
-        printf("Unmounting WebDAV...\n");
         unmountWebDAV(mountPoint);
-        printf("WebDAV unmounted.\n");
+        printf("WebDAV Unmounted.\n");
     } else {
         fprintf(stderr, "Invalid command.\n");
         fprintf(stderr, "Usage: %s [mount|unmount] <mount_point> [username:password@webdav_url:port]\n", argv[0]);
